@@ -1,18 +1,9 @@
+import { TankInterface } from './tank';
 import { Team, TeamId } from './team';
 import { Position } from './position';
 import { ShootAction } from './shootAction';
 
-export interface TankInterface {
-    id: string;
-    team?: Team;
-    teamId?: TeamId;
-    position: Position;
-    health: number;
-    speed: number;
-    cooldown: number;
-}
-
-export class Tank implements TankInterface {
+export class Plane implements TankInterface {
     id: string;
     team?: Team;
     teamId?: TeamId;
@@ -24,9 +15,9 @@ export class Tank implements TankInterface {
     shootCallback: (action: ShootAction) => void;
 
     constructor(id: string, shootCallback: (action: ShootAction) => void) {
-        console.log("Created tank with id: " + id);
+        console.log("Created plane with id: " + id);
         this.id = id;
-        this.position = { x: 0, y: 0, z: 0, rotation: 0, gunRotation: 0 };
+        this.position = { x: 0, y: 20, z: 0, rotation: 0, gunRotation: 0 };
         this.health = 100;
         this.speed = 5;
         this.cooldown = 4;
@@ -58,34 +49,6 @@ export class Tank implements TankInterface {
         this.team = team;
     }
 
-    setDamage(damage: number): void {
-        this.damage = damage;
-    }
-
-    getDamage(): number {
-        return this.damage;
-    }
-
-    getTeam(): Team | undefined {
-        return this.team;
-    }
-
-    getPosition(): Position {
-        return this.position;
-    }
-
-    getHealth(): number {
-        return this.health;
-    }
-
-    getSpeed(): number {
-        return this.speed;
-    }
-
-    setSpeed(speed: number): void {
-        this.speed = speed;
-    }
-
     export(): TankInterface {
         return {
             id: this.id,
@@ -97,5 +60,3 @@ export class Tank implements TankInterface {
         };
     }
 }
-
-

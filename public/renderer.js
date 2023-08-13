@@ -21,7 +21,7 @@ export function renderTank(tank, scene, camera) {
     scene.add(tankMesh);
 
     // If it's the player's tank, position the camera behind the tank
-    if (tank.id === globalVars.tankId) {
+    if (tank.id === globalVars.playerId) {
         const cameraOffset = 15; // Distance behind the tank
         const lookAtOffset = 30; // Distance in front of the tank to focus on
     
@@ -30,6 +30,48 @@ export function renderTank(tank, scene, camera) {
         const cameraX = position.x + cameraOffset * Math.sin(angle);
         const cameraZ = position.y - cameraOffset * Math.cos(angle);
         const cameraY = 20; // Height above the ground
+    
+        camera.position.set(cameraX, cameraY, cameraZ);
+    
+        // Calculate the point for the camera to look at
+        const lookAtX = position.x - lookAtOffset * Math.sin(angle);
+        const lookAtZ = position.y + lookAtOffset * Math.cos(angle);
+    
+        camera.lookAt(lookAtX, cameraY, lookAtZ);
+    }
+}
+
+export function renderPlane(plane, scene, camera) {
+    console.log("MY PLANE: " + JSON.stringify(plane));
+    const { position } = plane;
+
+    const geometry = new THREE.BoxGeometry(20, 20, 40);
+    const material = new THREE.MeshBasicMaterial({ color: 'blue' });
+    const planeMesh = new THREE.Mesh(geometry, material);
+
+    // Add a propeller
+    const propellerGeometry = new THREE.BoxGeometry(10, 10, 5);
+    const propellerMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
+    const propellerMesh = new THREE.Mesh(propellerGeometry, propellerMaterial);
+    propellerMesh.position.set(0, 0, 25);
+    planeMesh.add(propellerMesh);
+
+    planeMesh.position.set(position.x, position.z, position.y);
+    planeMesh.rotation.y = -position.rotation * Math.PI / 180;
+
+    scene.add(planeMesh);
+
+    // If it's the player's plane, position the camera behind the plane
+    if (plane.id === globalVars.playerId) {
+        const cameraOffset = 15; // Distance behind the plane
+        const lookAtOffset = 30; // Distance in front of the plane to focus on
+    
+        // Calculate the camera's position
+        const angle = position.rotation * Math.PI / 180;
+        const cameraX = position.x + cameraOffset * Math.sin(angle);
+        const cameraZ = position.y - cameraOffset * Math.cos(angle);
+        const cameraY = position.z + 20; // Height relative to the plane's altitude
+
     
         camera.position.set(cameraX, cameraY, cameraZ);
     

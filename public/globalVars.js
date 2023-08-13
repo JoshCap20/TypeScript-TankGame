@@ -1,5 +1,5 @@
 export const globalVars = {
-    tankId: null,
+    playerId: null,
     mapSize: null,
     obstacles: null
   };

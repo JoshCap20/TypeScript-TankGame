@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server as WebSocketServer } from 'ws';
 import path from 'path';
-import { Controller } from './controller/controller';
+import { Controller, VehicleType } from './controller/controller';
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +18,6 @@ app.get('/', (req, res) => {
 const sockserver = new WebSocketServer({ server });
 
 const controller = new Controller();
-const gameMap = controller.createMap();
 
 enum Action {
     update = "update",
@@ -36,10 +35,14 @@ setInterval(() => {
 sockserver.on('connection', ws => {
     console.log('New client connected!');
 
-    const tank = controller.createTank();
-    const playerId = tank.id;
+    const plane = controller.createPlane();
+    const playerId = plane.id;
+    ws.send(JSON.stringify({ type: Action.initial, id: playerId, vehicle: VehicleType.PLANE, plane: plane.export(), map: controller.getMap() }));
 
-    ws.send(JSON.stringify({ type: Action.initial, id: playerId, tank: tank.export(), map: gameMap }));
+    // const tank = controller.createTank();
+    // const playerId = tank.id;
+
+    // ws.send(JSON.stringify({ type: Action.initial, id: playerId, vehicle: VehicleType.TANK, tank: tank.export(), map: controller.getMap() }));
 
     ws.on('message', data => controller.onAction(playerId, data));
 

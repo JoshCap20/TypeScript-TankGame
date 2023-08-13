@@ -1,5 +1,6 @@
-import { handleMovement } from './player.js';
-import { renderTank, renderBullet, renderMap } from './renderer.js';
+import { handleTank } from './tankPlayer.js';
+import { handlePlane } from './planePlayer.js';
+import { renderTank, renderPlane, renderBullet, renderMap } from './renderer.js';
 import { globalVars } from './globalVars.js';
 
 ////////////////////////// THREE.JS SETUP //////////////////////////
@@ -27,12 +28,18 @@ ws.onmessage = (message) => {
   switch (data.type) {
     case 'initial':
       console.log('Initial data received' + JSON.stringify(data));
-      globalVars.tankId = data.tank.id = data.tank.id;
-      handleMovement(ws, data.tank);
+      if (globalVars.playerId) return;
+      if (data.vehicle === 'tank') {
+        globalVars.playerId = data.tank.id;
+        handleTank(ws, data.tank);
+      } else if (data.vehicle === 'plane') {
+        globalVars.playerId = data.plane.id;
+        handlePlane(ws, data.plane);
+      }
       renderMap(data.map, scene);
       break;
     case 'update':
-      if (!globalVars.tankId) return;
+      if (!globalVars.playerId) return;
       renderGame(data.game);
       break;
     default:
@@ -50,12 +57,17 @@ function renderGame(gameData) {
   });
   
   // Render tanks
-  gameData.tanks.forEach((tank) => {
+  gameData.tanks?.forEach((tank) => {
     renderTank(tank, scene, camera);
   });
 
+  // Render planes
+  gameData.planes?.forEach((plane) => {
+    renderPlane(plane, scene, camera);
+  });
+
   // Render bullets
-  gameData.bullets.forEach((bullet) => {
+  gameData.bullets?.forEach((bullet) => {
     renderBullet(bullet, scene);
   });
 

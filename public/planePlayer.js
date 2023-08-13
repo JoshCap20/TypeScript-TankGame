@@ -1,14 +1,14 @@
 import { globalVars } from './globalVars.js';
 
-export function handleMovement(ws, tankInfo) {
-    const position = tankInfo.position;
+export function handlePlane(ws, planeInfo) {
+    const position = planeInfo.position;
 
     let canShoot = true;
-    
-    const tank = {
-        speed: tankInfo.speed,
-        health: tankInfo.health,
-        cooldown: tankInfo.cooldown
+
+    const plane = {
+        speed: planeInfo.speed,
+        health: planeInfo.health,
+        cooldown: planeInfo.cooldown
     };
 
     const keys = {
@@ -20,36 +20,48 @@ export function handleMovement(ws, tankInfo) {
         s: false,
         a: false,
         d: false,
+        q: false, // Ascend
+        e: false, // Descend
     };
 
-    function updateMovement() {
+    function updateMovement(deltaTime) {
         const radianRotation = (position.rotation * Math.PI) / 180;
-
+        const distance = plane.speed * deltaTime * 10;
+        
         if (keys.ArrowUp || keys.w) {
-            const newX = position.x - Math.sin(radianRotation) * tank.speed;
-            const newY = position.y + Math.cos(radianRotation) * tank.speed;
-            if (isInvalidPosition(newX, newY)) return;
+            const newX = position.x - Math.sin(radianRotation) * distance;
+            const newY = position.y + Math.cos(radianRotation) * distance;
             position.x = newX;
             position.y = newY;
         }
         if (keys.ArrowDown || keys.s) {
-            const newX = position.x + Math.sin(radianRotation) * tank.speed;
-            const newY = position.y - Math.cos(radianRotation) * tank.speed;
-            if (isInvalidPosition(newX, newY)) return;
+            const newX = position.x + Math.sin(radianRotation) * distance;
+            const newY = position.y - Math.cos(radianRotation) * distance;
             position.x = newX;
             position.y = newY;
         }
         if (keys.ArrowLeft || keys.a) {
-            position.rotation -= 5;
+            position.rotation -= 5 * distance * .7;
             if (position.rotation < 0) position.rotation += 360;
         }
         if (keys.ArrowRight || keys.d) {
-            position.rotation += 5;
+            position.rotation += 5 * distance * .7;
             if (position.rotation >= 360) position.rotation -= 360;
+        }
+
+        // Ascending
+        if (keys.q) {
+            position.z += distance * 5; 
+        }
+        
+        // Descending
+        if (keys.e) {
+            position.z -= distance * 5; 
         }
 
         const message = JSON.stringify({
             type: 'move',
+            vehicle: 'plane',
             movementData: position
         });
         ws.send(message);
@@ -58,8 +70,7 @@ export function handleMovement(ws, tankInfo) {
     window.addEventListener('keydown', (event) => {
         if (keys.hasOwnProperty(event.key)) {
             keys[event.key] = true;
-            updateMovement();
-        } 
+        }
 
         if (event.code === "Space") {
             shoot();
@@ -78,6 +89,7 @@ export function handleMovement(ws, tankInfo) {
 
         const message = JSON.stringify({
             type: 'shoot',
+            vehicle: 'plane',
             bulletPosition: {...position}
         });
         ws.send(message);
@@ -110,4 +122,17 @@ export function handleMovement(ws, tankInfo) {
         }
         return false;
     }
+
+    let lastTime = performance.now();
+
+    function gameLoop(time) {
+        const deltaTime = (time - lastTime) / 1000;
+        lastTime = time;
+
+        updateMovement(deltaTime);
+        requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
 }
+

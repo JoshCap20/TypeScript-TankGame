@@ -2,6 +2,7 @@ import { Bullet } from "./bullet";
 import { Tank } from "./tank";
 import { Team, TeamId } from "./team";
 import { ShootAction } from './shootAction';
+import { Plane } from "./plane";
 
 type Score = {
     blue: number;
@@ -40,10 +41,22 @@ export class Game implements GameInterface {
         return tank;
     }
 
+    public createPlane(id: string): Plane {
+        const plane = new Plane(id, (action) => this.handleShoot(action));
+        this.addPlane(plane);
+        return plane;
+    }
+
     private addTank(tank: Tank): void {
         this.blueTeam.getTanks().length <= this.redTeam.getTanks().length
             ? this.blueTeam.addTank(tank)
             : this.redTeam.addTank(tank);
+    }
+
+    private addPlane(plane: Plane): void {
+        this.blueTeam.getPlanes().length <= this.redTeam.getPlanes().length
+            ? this.blueTeam.addPlane(plane)
+            : this.redTeam.addPlane(plane);
     }
 
     public removeTank(tank: string | Tank): void {
@@ -54,12 +67,28 @@ export class Game implements GameInterface {
         }
     }
 
+    public removePlane(plane: string | Plane): void {
+        if (plane instanceof Plane) {
+            plane.team?.removePlane(plane.id)
+        } else {
+            this.getPlane(plane).team?.removePlane(plane)
+        }
+    }
+
     getTanks(): Tank[] {
         return [...this.blueTeam.getTanks(), ...this.redTeam.getTanks()];
     }
 
     getTank(tankId: string): Tank | undefined {
         return this.getTanks().find(tank => tank.id === tankId);
+    }
+
+    getPlanes(): Plane[] {
+        return [...this.blueTeam.getPlanes(), ...this.redTeam.getPlanes()];
+    }
+
+    getPlane(planeId: string): Plane | undefined {
+        return this.getPlanes().find(plane => plane.id === planeId);
     }
 
     getScore(): Score {
@@ -96,6 +125,7 @@ export class Game implements GameInterface {
     public export() {
         return {
             tanks: this.getTanks().map(tank => tank.export()),
+            planes: this.getPlanes().map(plane => plane.export()),
             score: this.getScore(),
             bullets: this.bullets.map(bullet => bullet.export())
         };
