@@ -49,6 +49,10 @@ export function handleMovement(ws, tankInfo) {
             keys[event.key] = true;
             updateMovement();
         }
+
+        if (event.code === "Space") {
+            shoot();
+        }
     });
 
     window.addEventListener('keyup', (event) => {
@@ -56,4 +60,12 @@ export function handleMovement(ws, tankInfo) {
             keys[event.key] = false;
         }
     });
+
+    function shoot() {
+        const message = JSON.stringify({
+            type: 'shoot',
+            movementData: position
+        });
+        ws.send(message);
+    }
 }
