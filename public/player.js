@@ -1,3 +1,5 @@
+import { globalVars } from './globalVars.js';
+
 export function handleMovement(ws, tankInfo) {
     const position = tankInfo.position;
 
@@ -24,12 +26,18 @@ export function handleMovement(ws, tankInfo) {
         const radianRotation = (position.rotation * Math.PI) / 180;
 
         if (keys.ArrowUp || keys.KeyW) {
-            position.x -= Math.sin(radianRotation) * tank.speed;
-            position.y += Math.cos(radianRotation) * tank.speed;
+            const newX = position.x - Math.sin(radianRotation) * tank.speed;
+            const newY = position.y + Math.cos(radianRotation) * tank.speed;
+            if (isOutOfBounds(newX, newY)) return;
+            position.x = newX;
+            position.y = newY;
         }
         if (keys.ArrowDown || keys.KeyS) {
-            position.x += Math.sin(radianRotation) * tank.speed;
-            position.y -= Math.cos(radianRotation) * tank.speed;
+            const newX = position.x + Math.sin(radianRotation) * tank.speed;
+            const newY = position.y - Math.cos(radianRotation) * tank.speed;
+            if (isOutOfBounds(newX, newY)) return;
+            position.x = newX;
+            position.y = newY;
         }
         if (keys.ArrowLeft || keys.KeyA) {
             position.rotation -= 5;
@@ -77,5 +85,10 @@ export function handleMovement(ws, tankInfo) {
         setTimeout(() => {
             canShoot = true;
         }, tank.cooldown * 1000);
+    }
+
+    function isOutOfBounds(x, y) {
+        if (x < -(globalVars.mapSize / 2) || x > (globalVars.mapSize / 2) || y < -(globalVars.mapSize / 2) || y > (globalVars.mapSize / 2)) return true;
+        return false;
     }
 }
