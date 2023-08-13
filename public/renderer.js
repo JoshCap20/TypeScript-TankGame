@@ -22,22 +22,22 @@ export function renderTank(tank, scene, camera) {
 
     // If it's the player's tank, position the camera behind the tank
     if (tank.id === globalVars.tankId) {
-        // const cameraOffset = 50; // Distance behind the tank
-        // const lookAtOffset = 30; // Distance in front of the tank to focus on
-
-        // // Calculate the camera's position
-        // const angle = position.rotation * Math.PI / 180;
-        // const cameraX = position.x - cameraOffset * Math.sin(angle);
-        // const cameraY = position.y + cameraOffset * Math.cos(angle);
-        // const cameraZ = 20; // Height above the ground
-
-        // camera.position.set(cameraX, cameraY, cameraZ);
-
-        // // Calculate the point for the camera to look at
-        // const lookAtX = position.x + lookAtOffset * Math.sin(angle);
-        // const lookAtY = position.y - lookAtOffset * Math.cos(angle);
-
-        // camera.lookAt(lookAtX, lookAtY, cameraZ);
+        const cameraOffset = 15; // Distance behind the tank
+        const lookAtOffset = 30; // Distance in front of the tank to focus on
+    
+        // Calculate the camera's position
+        const angle = position.rotation * Math.PI / 180;
+        const cameraX = position.x + cameraOffset * Math.sin(angle);
+        const cameraZ = position.y - cameraOffset * Math.cos(angle);
+        const cameraY = 20; // Height above the ground
+    
+        camera.position.set(cameraX, cameraY, cameraZ);
+    
+        // Calculate the point for the camera to look at
+        const lookAtX = position.x - lookAtOffset * Math.sin(angle);
+        const lookAtZ = position.y + lookAtOffset * Math.cos(angle);
+    
+        camera.lookAt(lookAtX, cameraY, lookAtZ);
     }
 }
 
