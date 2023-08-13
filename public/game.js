@@ -20,7 +20,7 @@ const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
 scene.add(ambientLight);
 
 /// Add ground
-const groundGeometry = new THREE.PlaneGeometry(200, 200);
+const groundGeometry = new THREE.PlaneGeometry(1000, 1000);
 const groundMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.rotation.x = -Math.PI / 2;
