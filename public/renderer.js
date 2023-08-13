@@ -9,7 +9,7 @@ export function renderTank(tank, scene, camera) {
 
     // Add a cannon
     const cannonGeometry = new THREE.CylinderGeometry(2, 2, 20);
-    const cannonMaterial = new THREE.MeshBasicMaterial({ color: 'green' });
+    const cannonMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
     const cannonMesh = new THREE.Mesh(cannonGeometry, cannonMaterial);
     cannonMesh.position.set(0, 10, 15);
     cannonMesh.rotation.x = Math.PI / 2;
