@@ -13,7 +13,6 @@ const renderer = new THREE.WebGLRenderer();
 
 renderer.setSize(window.innerWidth - 100, window.innerHeight - 100);
 renderer.setClearColor(0xFFFFFF);
-scene.add(globalVars.controls.getObject());
 document.body.appendChild(renderer.domElement);
 
 // Add an ambient light to illuminate the scene
