@@ -2,8 +2,11 @@
 
 import { Game } from '../models/game';
 import { Utils } from './utils';
+import { GameMap, GameMapGenerator } from './gameMap';
+
 import { Tank } from '../models/tank';
 import { Position } from '../models/position';
+
 export class Controller {
     private game: Game;
 
@@ -13,6 +16,10 @@ export class Controller {
 
     public createTank(): Tank {
         return this.game.createTank(Utils.generateId());
+    }
+
+    public createMap(): GameMap {
+        return GameMapGenerator.generateMap();
     }
 
     public onAction(playerId: string, message: string): void {
@@ -25,7 +32,7 @@ export class Controller {
             case 'shoot':
                 this.shoot(playerId, data.bulletPosition)
                 break;
-            }
+        }
     }
 
     private moveTank(playerId: string, position: Position): void {
@@ -45,7 +52,7 @@ export class Controller {
     }
 
 }
-    
 
-    
+
+
 

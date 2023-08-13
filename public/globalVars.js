@@ -1,3 +1,4 @@
 export const globalVars = {
-    tankId: null
+    tankId: null,
+    mapSize: null,
   };

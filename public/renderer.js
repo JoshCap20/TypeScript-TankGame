@@ -52,3 +52,30 @@ export function renderBullet(bullet, scene) {
 
     scene.add(bulletMesh);
 }
+
+export function renderMap(mapInfo, scene) {
+    console.log("MAP INFO: " + JSON.stringify(mapInfo));
+    const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
+    scene.add(ambientLight);
+    
+    /// Add ground
+    const groundGeometry = new THREE.PlaneGeometry(mapInfo.size, mapInfo.size);
+    const groundMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -10;
+    scene.add(ground);
+
+    /// Add obstacles
+    mapInfo.obstacles.forEach((obstacle) => {
+        const { x, y, width, height } = obstacle;
+        const geometry = new THREE.CylinderGeometry(width, 20, height);
+        const material = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.set(x, 10, y);
+        scene.add(mesh);
+    });
+
+    /// Add walls
+    globalVars.mapSize = mapInfo.size;
+}

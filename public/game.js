@@ -1,5 +1,5 @@
 import { handleMovement } from './player.js';
-import { renderTank, renderBullet } from './renderer.js';
+import { renderTank, renderBullet, renderMap } from './renderer.js';
 import { globalVars } from './globalVars.js';
 
 ////////////////////////// THREE.JS SETUP //////////////////////////
@@ -12,20 +12,8 @@ camera.lookAt(scene.position); // temporary til fix camera
 const renderer = new THREE.WebGLRenderer();
 
 renderer.setSize(window.innerWidth - 100, window.innerHeight - 100);
-renderer.setClearColor(0xFFFFFF);
+// renderer.setClearColor(0xFFFFFF);
 document.body.appendChild(renderer.domElement);
-
-// Add an ambient light to illuminate the scene
-const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.5);
-scene.add(ambientLight);
-
-/// Add ground
-const groundGeometry = new THREE.PlaneGeometry(1000, 1000);
-const groundMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
-const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = -10;
-scene.add(ground);
 ////////////////////////////////////////////////////////////////////
 
 const ws = new WebSocket('ws://localhost:3000');
@@ -41,6 +29,7 @@ ws.onmessage = (message) => {
       console.log('Initial data received' + JSON.stringify(data));
       globalVars.tankId = data.tank.id = data.tank.id;
       handleMovement(ws, data.tank);
+      renderMap(data.map, scene);
       break;
     case 'update':
       if (!globalVars.tankId) return;
@@ -55,6 +44,7 @@ function renderGame(gameData) {
   scene.children.forEach((object) => {
     if (object.type === 'Mesh') {
       if (object.geometry.type === 'PlaneGeometry') return;
+      if (object.geometry.type === 'CylinderGeometry') return;
       scene.remove(object);
     }
   });

@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
 const sockserver = new WebSocketServer({ server });
 
 const controller = new Controller();
+const gameMap = controller.createMap();
 
 enum Action {
     update = "update",
@@ -38,7 +39,7 @@ sockserver.on('connection', ws => {
     const tank = controller.createTank();
     const playerId = tank.id;
 
-    ws.send(JSON.stringify({ type: Action.initial, id: playerId, tank: tank.export() }));
+    ws.send(JSON.stringify({ type: Action.initial, id: playerId, tank: tank.export(), map: gameMap }));
 
     ws.on('message', data => controller.onAction(playerId, data));
 
