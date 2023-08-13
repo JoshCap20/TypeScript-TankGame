@@ -16,34 +16,34 @@ export function handleMovement(ws, tankInfo) {
         ArrowDown: false,
         ArrowLeft: false,
         ArrowRight: false,
-        KeyW: false,
-        KeyS: false,
-        KeyA: false,
-        KeyD: false,
+        w: false,
+        s: false,
+        a: false,
+        d: false,
     };
 
     function updateMovement() {
         const radianRotation = (position.rotation * Math.PI) / 180;
 
-        if (keys.ArrowUp || keys.KeyW) {
+        if (keys.ArrowUp || keys.w) {
             const newX = position.x - Math.sin(radianRotation) * tank.speed;
             const newY = position.y + Math.cos(radianRotation) * tank.speed;
             if (isInvalidPosition(newX, newY)) return;
             position.x = newX;
             position.y = newY;
         }
-        if (keys.ArrowDown || keys.KeyS) {
+        if (keys.ArrowDown || keys.s) {
             const newX = position.x + Math.sin(radianRotation) * tank.speed;
             const newY = position.y - Math.cos(radianRotation) * tank.speed;
             if (isInvalidPosition(newX, newY)) return;
             position.x = newX;
             position.y = newY;
         }
-        if (keys.ArrowLeft || keys.KeyA) {
+        if (keys.ArrowLeft || keys.a) {
             position.rotation -= 5;
             if (position.rotation < 0) position.rotation += 360;
         }
-        if (keys.ArrowRight || keys.KeyD) {
+        if (keys.ArrowRight || keys.d) {
             position.rotation += 5;
             if (position.rotation >= 360) position.rotation -= 360;
         }
@@ -59,7 +59,7 @@ export function handleMovement(ws, tankInfo) {
         if (keys.hasOwnProperty(event.key)) {
             keys[event.key] = true;
             updateMovement();
-        }
+        } 
 
         if (event.code === "Space") {
             shoot();
