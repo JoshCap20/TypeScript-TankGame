@@ -56,6 +56,12 @@ export function handleTank(ws, tankInfo) {
         ws.send(message);
     }
 
+
+    window.addEventListener('mousemove', (event) => {
+        globalVars.pitch += event.movementY * 0.002;
+        globalVars.pitch = Math.max(Math.min(globalVars.pitch, 0.28), -3);
+      });
+
     window.addEventListener('keydown', (event) => {
         if (keys.hasOwnProperty(event.key)) {
             keys[event.key] = true;

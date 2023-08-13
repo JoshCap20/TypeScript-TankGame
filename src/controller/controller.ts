@@ -5,7 +5,7 @@ import { Utils } from './utils';
 import { GameMap, GameMapGenerator } from './gameMap';
 
 import { Tank } from '../models/tank';
-import { Plane } from '../models/plane';
+import { Plane, PlanePosition } from '../models/plane';
 import { Position } from '../models/position';
 
 export enum VehicleType {
@@ -39,7 +39,7 @@ export class Controller {
         console.log("ACTION: " + JSON.stringify(data));
         switch (data.type) {
             case 'move':
-                this.move(playerId, data.vehicle, data.movementData);
+                this.move(playerId, data);
                 break;
             case 'shoot':
                 this.shoot(playerId, data.bulletPosition, data.vehicle)
@@ -47,13 +47,13 @@ export class Controller {
         }
     }
 
-    private move(playerId: string, vehicle: VehicleType, movementData: Position): void {
-        switch (vehicle) {
+    private move(playerId: string, data): void {
+        switch (data.vehicle) {
             case VehicleType.TANK:
-                this.moveTank(playerId, movementData);
+                this.moveTank(playerId, data.movementData);
                 break;
             case VehicleType.PLANE:
-                this.movePlane(playerId, movementData);
+                this.movePlane(playerId, data.movementData, data.planePosition);
                 break;
         }
     }
@@ -62,9 +62,9 @@ export class Controller {
         this.game.getTank(playerId).move(position);
     }
 
-    private movePlane(playerId: string, position: Position): void {
+    private movePlane(playerId: string, position: Position, planePosition: PlanePosition): void {
         console.log("ERRR: " + JSON.stringify(position));
-        this.game.getPlane(playerId).move(position);
+        this.game.getPlane(playerId).move(position, planePosition);
     }
 
     private shoot(playerId: string, position: Position, vehicle: VehicleType): void {

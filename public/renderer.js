@@ -8,11 +8,13 @@ export function renderTank(tank, scene, camera) {
     const tankMesh = new THREE.Mesh(geometry, material);
 
     // Add a cannon
-    const cannonGeometry = new THREE.CylinderGeometry(2, 2, 20);
+    const cannonGeometry = new THREE.CylinderGeometry(3, 5, 50);
     const cannonMaterial = new THREE.MeshBasicMaterial({ color: 'black' });
     const cannonMesh = new THREE.Mesh(cannonGeometry, cannonMaterial);
-    cannonMesh.position.set(0, 10, 15);
-    cannonMesh.rotation.x = Math.PI / 2;
+    cannonMesh.position.set(0, 4, 30);
+
+    cannonMesh.rotation.x = Math.PI / 2 + globalVars.pitch; // Apply the pitch
+    
     tankMesh.add(cannonMesh);
 
     tankMesh.position.set(position.x, 0, position.y);
@@ -22,7 +24,8 @@ export function renderTank(tank, scene, camera) {
 
     // If it's the player's tank, position the camera behind the tank
     if (tank.id === globalVars.playerId) {
-        const cameraOffset = 15; // Distance behind the tank
+        globalVars.playerCannonMesh = cannonMesh;
+        const cameraOffset = 0; // Distance behind the tank
         const lookAtOffset = 30; // Distance in front of the tank to focus on
     
         // Calculate the camera's position
@@ -42,8 +45,7 @@ export function renderTank(tank, scene, camera) {
 }
 
 export function renderPlane(plane, scene, camera) {
-    console.log("MY PLANE: " + JSON.stringify(plane));
-    const { position } = plane;
+    const { position, planePosition } = plane;
 
     const geometry = new THREE.BoxGeometry(20, 20, 40);
     const material = new THREE.MeshBasicMaterial({ color: 'blue' });
@@ -58,13 +60,14 @@ export function renderPlane(plane, scene, camera) {
 
     planeMesh.position.set(position.x, position.z, position.y);
     planeMesh.rotation.y = -position.rotation * Math.PI / 180;
+    planeMesh.rotation.x = planePosition.tilt * Math.PI / 180;
 
     scene.add(planeMesh);
 
     // If it's the player's plane, position the camera behind the plane
     if (plane.id === globalVars.playerId) {
-        const cameraOffset = 15; // Distance behind the plane
-        const lookAtOffset = 30; // Distance in front of the plane to focus on
+        const cameraOffset = 50; // Distance behind the plane
+        const lookAtOffset = 10; // Distance in front of the plane to focus on
     
         // Calculate the camera's position
         const angle = position.rotation * Math.PI / 180;
@@ -90,7 +93,7 @@ export function renderBullet(bullet, scene) {
     const material = new THREE.MeshBasicMaterial({ color: 'red' });
     const bulletMesh = new THREE.Mesh(geometry, material);
 
-    bulletMesh.position.set(position.x, 10,  position.y);
+    bulletMesh.position.set(position.x, position.z,  position.y);
 
     scene.add(bulletMesh);
 }

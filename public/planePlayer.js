@@ -2,6 +2,7 @@ import { globalVars } from './globalVars.js';
 
 export function handlePlane(ws, planeInfo) {
     const position = planeInfo.position;
+    const planePosition = planeInfo.planePosition;
 
     let canShoot = true;
 
@@ -20,49 +21,42 @@ export function handlePlane(ws, planeInfo) {
         s: false,
         a: false,
         d: false,
-        q: false, // Ascend
-        e: false, // Descend
     };
 
     function updateMovement(deltaTime) {
         const radianRotation = (position.rotation * Math.PI) / 180;
-        const distance = plane.speed * deltaTime * 10;
+        const distance = plane.speed * (deltaTime ? deltaTime : 1) * 10;
         
-        if (keys.ArrowUp || keys.w) {
-            const newX = position.x - Math.sin(radianRotation) * distance;
-            const newY = position.y + Math.cos(radianRotation) * distance;
-            position.x = newX;
-            position.y = newY;
-        }
-        if (keys.ArrowDown || keys.s) {
-            const newX = position.x + Math.sin(radianRotation) * distance;
-            const newY = position.y - Math.cos(radianRotation) * distance;
-            position.x = newX;
-            position.y = newY;
-        }
+        const newX = position.x - Math.sin(radianRotation) * distance;
+        const newY = position.y + Math.cos(radianRotation) * distance;
+        position.x = newX;
+        position.y = newY;
+
         if (keys.ArrowLeft || keys.a) {
             position.rotation -= 5 * distance * .7;
             if (position.rotation < 0) position.rotation += 360;
-        }
-        if (keys.ArrowRight || keys.d) {
+        } else if (keys.ArrowRight || keys.d) {
             position.rotation += 5 * distance * .7;
             if (position.rotation >= 360) position.rotation -= 360;
+        } else {
+            planePosition.tilt *= .9;
         }
 
         // Ascending
-        if (keys.q) {
-            position.z += distance * 5; 
+        if (keys.ArrowUp || keys.w) {
+            planePosition.tilt -= 10; // Tilt upwards
+            position.z += Math.cos(planePosition.tilt * Math.PI / 180) * distance; // Ascend
+        } else if (keys.ArrowDown || keys.s) {
+            planePosition.tilt += 10; // Tilt downwards
+            position.z -= Math.sin(planePosition.tilt * Math.PI / 180) * distance; // Descend
         }
-        
-        // Descending
-        if (keys.e) {
-            position.z -= distance * 5; 
-        }
+        planePosition.tilt = Math.max(-45, Math.min(45, planePosition.tilt));
 
         const message = JSON.stringify({
             type: 'move',
             vehicle: 'plane',
-            movementData: position
+            movementData: position,
+            planePosition: planePosition
         });
         ws.send(message);
     }

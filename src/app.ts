@@ -35,14 +35,14 @@ setInterval(() => {
 sockserver.on('connection', ws => {
     console.log('New client connected!');
 
-    const plane = controller.createPlane();
-    const playerId = plane.id;
-    ws.send(JSON.stringify({ type: Action.initial, id: playerId, vehicle: VehicleType.PLANE, plane: plane.export(), map: controller.getMap() }));
+    // const plane = controller.createPlane();
+    // const playerId = plane.id;
+    // ws.send(JSON.stringify({ type: Action.initial, id: playerId, vehicle: VehicleType.PLANE, plane: plane.export(), map: controller.getMap() }));
 
-    // const tank = controller.createTank();
-    // const playerId = tank.id;
+    const tank = controller.createTank();
+    const playerId = tank.id;
 
-    // ws.send(JSON.stringify({ type: Action.initial, id: playerId, vehicle: VehicleType.TANK, tank: tank.export(), map: controller.getMap() }));
+    ws.send(JSON.stringify({ type: Action.initial, id: playerId, vehicle: VehicleType.TANK, tank: tank.export(), map: controller.getMap() }));
 
     ws.on('message', data => controller.onAction(playerId, data));
 
