@@ -22,9 +22,10 @@ export class Bullet implements BulletInterface {
     }
 
     updatePosition(): void {
-        const radianRotation = (this.position.rotation * Math.PI) / 180;
+        const radianRotation = (this.position.rotation * Math.PI) / 180; 
         this.position.x -= Math.sin(radianRotation) * this.speed;
         this.position.y += Math.cos(radianRotation) * this.speed;
+        this.position.z -= this.speed * Math.sin(this.position.gunRotation);
     }
 
     hasExpired(): boolean {

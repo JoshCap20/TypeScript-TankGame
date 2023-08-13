@@ -59,7 +59,7 @@ export function handleTank(ws, tankInfo) {
 
     window.addEventListener('mousemove', (event) => {
         position.gunRotation  += event.movementY * 0.002;
-        position.gunRotation = Math.max(Math.min(position.gunRotation, 0.28), -3);
+        position.gunRotation = Math.max(Math.min(position.gunRotation, 0.4), -0.07);
       });
 
     window.addEventListener('keydown', (event) => {

@@ -13,8 +13,8 @@ export function renderTank(tank, scene, camera) {
     const cannonMesh = new THREE.Mesh(cannonGeometry, cannonMaterial);
     cannonMesh.position.set(0, 4, 30);
 
-    cannonMesh.rotation.x = Math.PI / 2 + position.gunRotation ; // Apply the pitch
-    
+    cannonMesh.rotation.x = Math.PI / 2 - position.gunRotation; // Apply the pitch
+
     tankMesh.add(cannonMesh);
 
     tankMesh.position.set(position.x, 0, position.y);
@@ -93,7 +93,7 @@ export function renderBullet(bullet, scene) {
     const material = new THREE.MeshBasicMaterial({ color: 'red' });
     const bulletMesh = new THREE.Mesh(geometry, material);
 
-    bulletMesh.position.set(position.x, position.z,  position.y);
+    bulletMesh.position.set(position.x, position.z, position.y);
 
     scene.add(bulletMesh);
 }
