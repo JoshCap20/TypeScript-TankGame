@@ -4,6 +4,7 @@ export function handleMovement(ws, tankInfo) {
     const tank = {
         speed: tankInfo.speed,
         health: tankInfo.health,
+        // cooldown: tankInfo.cooldown, TODO: Implement cooldown
     };
 
     const keys = {
@@ -64,7 +65,7 @@ export function handleMovement(ws, tankInfo) {
     function shoot() {
         const message = JSON.stringify({
             type: 'shoot',
-            movementData: position
+            bulletPosition: {...position}
         });
         ws.send(message);
     }

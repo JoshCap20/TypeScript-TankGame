@@ -11,8 +11,9 @@ type Score = {
 interface GameInterface {
     blueTeam: Team;
     redTeam: Team;
+    bullets: Bullet[];
 
-    addTank(tank: Tank): void;
+    createTank(id: string): void;
     removeTank(tank: string | Tank): void;
 
     getTanks(): Tank[];
@@ -30,22 +31,22 @@ export class Game implements GameInterface {
     constructor() {
         this.blueTeam = new Team("blue");
         this.redTeam = new Team("red");
-        setInterval(() => this.gameLoop(), 2000);
+        setInterval(() => this.gameLoop(), 1000 / 60);
     }
 
-    createTank(id: string): Tank {
+    public createTank(id: string): Tank {
         const tank = new Tank(id, (action) => this.handleShoot(action));
         this.addTank(tank);
         return tank;
     }
 
-    addTank(tank: Tank): void {
+    private addTank(tank: Tank): void {
         this.blueTeam.getTanks().length <= this.redTeam.getTanks().length
             ? this.blueTeam.addTank(tank)
             : this.redTeam.addTank(tank);
     }
 
-    removeTank(tank: string | Tank): void {
+    public removeTank(tank: string | Tank): void {
         if (tank instanceof Tank) {
             tank.team?.removeTank(tank.id)
         } else {
@@ -76,15 +77,20 @@ export class Game implements GameInterface {
         return this.getTanks().find(t => t.id === tank.id)?.team;
     }
 
-    handleShoot(action: ShootAction): void {
+    private handleShoot(action: ShootAction): void {
         if (action.shooterId) {
-            const bullet = new Bullet(action.shooterId, action.position);
+            const bullet = new Bullet(action.shooterId, {...action.position});
             this.bullets.push(bullet);
         }
     }
 
-    gameLoop(): void {
+    private gameLoop(): void {
+        this.updateBullets();
+    }
+
+    private updateBullets(): void {
         this.bullets = this.bullets.filter(bullet => !bullet.hasExpired());
+        this.bullets.map(bullet => bullet.updatePosition())
     }
 
     public export() {

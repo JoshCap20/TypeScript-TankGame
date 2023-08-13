@@ -48,8 +48,7 @@ export function renderBullet(bullet, scene) {
     const material = new THREE.MeshBasicMaterial({ color: 'red' });
     const bulletMesh = new THREE.Mesh(geometry, material);
 
-    bulletMesh.position.set(position.x, position.y, 0);
-    bulletMesh.rotation.z = -bullet.rotation * Math.PI / 180;
+    bulletMesh.position.set(position.x, 10,  position.y);
 
     scene.add(bulletMesh);
 }

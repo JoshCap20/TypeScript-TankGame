@@ -13,12 +13,18 @@ export class Bullet implements BulletInterface {
     position: Position;
     speed: number;
     creationTime: number = Date.now();
-    static readonly TTL = 5000;
+    static readonly TTL = 10000;
 
     constructor(shooterId: string, position: Position) {
         this.shooterId = shooterId;
         this.position = position;
-        this.speed = 10;
+        this.speed = 5;
+    }
+
+    updatePosition(): void {
+        const radianRotation = (this.position.rotation * Math.PI) / 180;
+        this.position.x -= Math.sin(radianRotation) * this.speed;
+        this.position.y += Math.cos(radianRotation) * this.speed;
     }
 
     hasExpired(): boolean {

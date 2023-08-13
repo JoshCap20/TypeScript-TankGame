@@ -23,13 +23,17 @@ export class Controller {
                 this.moveTank(playerId, data.movementData);
                 break;
             case 'shoot':
-                this.game.getTank(playerId).shoot();
+                this.shoot(playerId, data.bulletPosition)
                 break;
             }
     }
 
     private moveTank(playerId: string, position: Position): void {
         this.game.getTank(playerId).move(position);
+    }
+
+    private shoot(playerId: string, position: Position): void {
+        this.game.getTank(playerId).shoot(position);
     }
 
     public onDisconnect(playerId: string): void {

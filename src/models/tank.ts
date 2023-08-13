@@ -30,13 +30,12 @@ export class Tank implements TankInterface {
         this.shootCallback = shootCallback;
     }
 
-    shoot(): void {
-        console.log("Tank " + this.id + " shoots");
+    shoot(position: Position): void {
         const action: ShootAction = {
             shooterId: this.id,
-            position: this.position
+            position: position
         };
-        this.shootCallback(action); // Emit the shoot action
+        this.shootCallback(action);
     }
 
     move(position: Position): void {
