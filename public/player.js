@@ -10,11 +10,11 @@ export function handleMovement(ws, tankInfo) {
         const radianRotation = (position.rotation * Math.PI) / 180;
         switch (event.key) {
             case 'ArrowUp':
-                position.x += Math.sin(radianRotation) * tank.speed;
+                position.x -= Math.sin(radianRotation) * tank.speed;
                 position.y += Math.cos(radianRotation) * tank.speed;
                 break;
             case 'ArrowDown':
-                position.x -= Math.sin(radianRotation) * tank.speed;
+                position.x += Math.sin(radianRotation) * tank.speed;
                 position.y -= Math.cos(radianRotation) * tank.speed;
                 break;
             case 'ArrowLeft':
