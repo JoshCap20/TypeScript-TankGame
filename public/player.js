@@ -6,34 +6,54 @@ export function handleMovement(ws, tankInfo) {
         health: tankInfo.health,
     };
 
-    window.addEventListener('keydown', (event) => {
+    const keys = {
+        ArrowUp: false,
+        ArrowDown: false,
+        ArrowLeft: false,
+        ArrowRight: false,
+        KeyW: false,
+        KeyS: false,
+        KeyA: false,
+        KeyD: false,
+    };
+
+    function updateMovement() {
         const radianRotation = (position.rotation * Math.PI) / 180;
-        switch (event.key) {
-            case "KeyW":
-            case 'ArrowUp':
-                position.x -= Math.sin(radianRotation) * tank.speed;
-                position.y += Math.cos(radianRotation) * tank.speed;
-                break;
-            case "KeyS":
-            case 'ArrowDown':
-                position.x += Math.sin(radianRotation) * tank.speed;
-                position.y -= Math.cos(radianRotation) * tank.speed;
-                break;
-            case "KeyA":
-            case 'ArrowLeft':
-                position.rotation -= 5;
-                if (position.rotation < 0) position.rotation += 360; // Keep rotation within 0-360
-                break;
-            case "KeyD":
-            case 'ArrowRight':
-                position.rotation += 5;
-                if (position.rotation >= 360) position.rotation -= 360; // Keep rotation within 0-360
-                break;
+
+        if (keys.ArrowUp || keys.KeyW) {
+            position.x -= Math.sin(radianRotation) * tank.speed;
+            position.y += Math.cos(radianRotation) * tank.speed;
         }
+        if (keys.ArrowDown || keys.KeyS) {
+            position.x += Math.sin(radianRotation) * tank.speed;
+            position.y -= Math.cos(radianRotation) * tank.speed;
+        }
+        if (keys.ArrowLeft || keys.KeyA) {
+            position.rotation -= 5;
+            if (position.rotation < 0) position.rotation += 360;
+        }
+        if (keys.ArrowRight || keys.KeyD) {
+            position.rotation += 5;
+            if (position.rotation >= 360) position.rotation -= 360;
+        }
+
         const message = JSON.stringify({
             type: 'move',
             movementData: position
         });
         ws.send(message);
+    }
+
+    window.addEventListener('keydown', (event) => {
+        if (keys.hasOwnProperty(event.key)) {
+            keys[event.key] = true;
+            updateMovement();
+        }
+    });
+
+    window.addEventListener('keyup', (event) => {
+        if (keys.hasOwnProperty(event.key)) {
+            keys[event.key] = false;
+        }
     });
 }
