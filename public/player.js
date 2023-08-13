@@ -1,10 +1,12 @@
 export function handleMovement(ws, tankInfo) {
     const position = tankInfo.position;
+
+    let canShoot = true;
     
     const tank = {
         speed: tankInfo.speed,
         health: tankInfo.health,
-        // cooldown: tankInfo.cooldown, TODO: Implement cooldown
+        cooldown: tankInfo.cooldown
     };
 
     const keys = {
@@ -63,10 +65,17 @@ export function handleMovement(ws, tankInfo) {
     });
 
     function shoot() {
+        if (!canShoot) return;
+        canShoot = false;
+
         const message = JSON.stringify({
             type: 'shoot',
             bulletPosition: {...position}
         });
         ws.send(message);
+
+        setTimeout(() => {
+            canShoot = true;
+        }, tank.cooldown * 1000);
     }
 }

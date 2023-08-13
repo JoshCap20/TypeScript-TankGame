@@ -18,7 +18,7 @@ export class Bullet implements BulletInterface {
     constructor(shooterId: string, position: Position) {
         this.shooterId = shooterId;
         this.position = position;
-        this.speed = 5;
+        this.speed = 8;
     }
 
     updatePosition(): void {

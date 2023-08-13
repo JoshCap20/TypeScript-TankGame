@@ -9,6 +9,7 @@ interface TankInterface {
     position: Position;
     health: number;
     speed: number;
+    cooldown: number;
 }
 
 export class Tank implements TankInterface {
@@ -19,6 +20,7 @@ export class Tank implements TankInterface {
     health: number;
     speed: number;
     damage: number;
+    cooldown: number;
     shootCallback: (action: ShootAction) => void;
 
     constructor(id: string, shootCallback: (action: ShootAction) => void) {
@@ -27,6 +29,8 @@ export class Tank implements TankInterface {
         this.position = { x: 0, y: 0, rotation: 0, gunRotation: 0 };
         this.health = 100;
         this.speed = 5;
+        this.cooldown = 4;
+        this.damage = 20;
         this.shootCallback = shootCallback;
     }
 
@@ -89,6 +93,7 @@ export class Tank implements TankInterface {
             position: this.position,
             health: this.health,
             speed: this.speed,
+            cooldown: this.cooldown
         };
     }
 }
