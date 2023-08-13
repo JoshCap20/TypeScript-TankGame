@@ -13,7 +13,7 @@ export function renderTank(tank, scene, camera) {
     const cannonMesh = new THREE.Mesh(cannonGeometry, cannonMaterial);
     cannonMesh.position.set(0, 4, 30);
 
-    cannonMesh.rotation.x = Math.PI / 2 + globalVars.pitch; // Apply the pitch
+    cannonMesh.rotation.x = Math.PI / 2 + position.gunRotation ; // Apply the pitch
     
     tankMesh.add(cannonMesh);
 

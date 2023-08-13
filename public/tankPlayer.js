@@ -58,8 +58,8 @@ export function handleTank(ws, tankInfo) {
 
 
     window.addEventListener('mousemove', (event) => {
-        globalVars.pitch += event.movementY * 0.002;
-        globalVars.pitch = Math.max(Math.min(globalVars.pitch, 0.28), -3);
+        position.gunRotation  += event.movementY * 0.002;
+        position.gunRotation = Math.max(Math.min(position.gunRotation, 0.28), -3);
       });
 
     window.addEventListener('keydown', (event) => {
