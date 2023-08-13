@@ -30,6 +30,7 @@ export class Game implements GameInterface {
     constructor() {
         this.blueTeam = new Team("blue");
         this.redTeam = new Team("red");
+        setInterval(() => this.gameLoop(), 2000);
     }
 
     createTank(id: string): Tank {
@@ -80,6 +81,10 @@ export class Game implements GameInterface {
             const bullet = new Bullet(action.shooterId, action.position);
             this.bullets.push(bullet);
         }
+    }
+
+    gameLoop(): void {
+        this.bullets = this.bullets.filter(bullet => !bullet.hasExpired());
     }
 
     public export() {
