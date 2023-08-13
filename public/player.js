@@ -28,14 +28,14 @@ export function handleMovement(ws, tankInfo) {
         if (keys.ArrowUp || keys.KeyW) {
             const newX = position.x - Math.sin(radianRotation) * tank.speed;
             const newY = position.y + Math.cos(radianRotation) * tank.speed;
-            if (isOutOfBounds(newX, newY)) return;
+            if (isInvalidPosition(newX, newY)) return;
             position.x = newX;
             position.y = newY;
         }
         if (keys.ArrowDown || keys.KeyS) {
             const newX = position.x + Math.sin(radianRotation) * tank.speed;
             const newY = position.y - Math.cos(radianRotation) * tank.speed;
-            if (isOutOfBounds(newX, newY)) return;
+            if (isInvalidPosition(newX, newY)) return;
             position.x = newX;
             position.y = newY;
         }
@@ -87,8 +87,27 @@ export function handleMovement(ws, tankInfo) {
         }, tank.cooldown * 1000);
     }
 
+    function isInvalidPosition(x, y) {
+        if (isOutOfBounds(x, y)) return true;
+        if (isCollidingWithObstacle(x, y)) return true;
+        return false;
+    }
+
     function isOutOfBounds(x, y) {
         if (x < -(globalVars.mapSize / 2) || x > (globalVars.mapSize / 2) || y < -(globalVars.mapSize / 2) || y > (globalVars.mapSize / 2)) return true;
+        return false;
+    }
+
+    function isCollidingWithObstacle(x, y) {
+        for (const obstacle of globalVars.obstacles) {
+            const dx = x - obstacle.x;
+            const dy = y - obstacle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+    
+            if (distance < obstacle.width / 2 + 10) { 
+                return true;
+            }
+        }
         return false;
     }
 }

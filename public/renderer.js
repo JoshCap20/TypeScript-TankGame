@@ -75,7 +75,13 @@ export function renderMap(mapInfo, scene) {
         mesh.position.set(x, 10, y);
         scene.add(mesh);
     });
+    globalVars.obstacles = mapInfo.obstacles.map(obstacle => ({
+        x: obstacle.x,
+        y: obstacle.y,
+        width: obstacle.width,
+        height: obstacle.height
+    }));
 
-    /// Add walls
+    /// Add boundaries
     globalVars.mapSize = mapInfo.size;
 }
