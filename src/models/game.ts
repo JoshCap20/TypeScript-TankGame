@@ -1,6 +1,7 @@
 import { Bullet } from "./bullet";
 import { Tank } from "./tank";
 import { Team, TeamId } from "./team";
+import { ShootAction } from './shootAction';
 
 type Score = {
     blue: number;
@@ -32,7 +33,7 @@ export class Game implements GameInterface {
     }
 
     createTank(id: string): Tank {
-        const tank = new Tank(id);
+        const tank = new Tank(id, (action) => this.handleShoot(action));
         this.addTank(tank);
         return tank;
     }
@@ -72,7 +73,14 @@ export class Game implements GameInterface {
 
     getTeamOfTank(tank: Tank): Team | undefined {
         return this.getTanks().find(t => t.id === tank.id)?.team;
-      }
+    }
+
+    handleShoot(action: ShootAction): void {
+        if (action.shooterId) {
+            const bullet = new Bullet(action.shooterId, action.position);
+            this.bullets.push(bullet);
+        }
+    }
 
     public export() {
         return {

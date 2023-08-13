@@ -2,8 +2,8 @@
 
 import { Game } from '../models/game';
 import { Utils } from './utils';
-import { Tank, Position } from '../models/tank';
-
+import { Tank } from '../models/tank';
+import { Position } from '../models/position';
 export class Controller {
     private game: Game;
 
@@ -17,15 +17,15 @@ export class Controller {
 
     public onAction(playerId: string, message: string): void {
         const data = JSON.parse(message);
-        console.log("ACTION: " + data);
+        console.log("ACTION: " + JSON.stringify(data));
         switch (data.type) {
             case 'move':
                 this.moveTank(playerId, data.movementData);
                 break;
-            // case 'shoot':
-            //     this.game.getTank(playerId).shoot();
-            //     break;
-        }
+            case 'shoot':
+                this.game.getTank(playerId).shoot();
+                break;
+            }
     }
 
     private moveTank(playerId: string, position: Position): void {

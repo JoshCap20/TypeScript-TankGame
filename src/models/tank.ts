@@ -1,4 +1,6 @@
 import { Team, TeamId } from './team';
+import { Position } from './position';
+import { ShootAction } from './shootAction';
 
 interface TankInterface {
     id: string;
@@ -17,25 +19,24 @@ export class Tank implements TankInterface {
     health: number;
     speed: number;
     damage: number;
+    shootCallback: (action: ShootAction) => void;
 
-    constructor(id: string) {
+    constructor(id: string, shootCallback: (action: ShootAction) => void) {
         console.log("Created tank with id: " + id);
         this.id = id;
         this.position = { x: 0, y: 0, rotation: 0, gunRotation: 0 };
         this.health = 100;
         this.speed = 5;
+        this.shootCallback = shootCallback;
     }
 
-    shoot(target: Tank): void {
-        if (!this.team || !target.team || this.team === target.team) {
-            return;
-        }
-
-        target.takeDamage(this.getDamage());
-
-        if (!target.isAlive()) {
-            this.team?.updateScore(1);
-        }
+    shoot(): void {
+        console.log("Tank " + this.id + " shoots");
+        const action: ShootAction = {
+            shooterId: this.id,
+            position: this.position
+        };
+        this.shootCallback(action); // Emit the shoot action
     }
 
     move(position: Position): void {
@@ -93,9 +94,4 @@ export class Tank implements TankInterface {
     }
 }
 
-export type Position = {
-    x: number;
-    y: number;
-    rotation: number; // 0-360
-    gunRotation: number; // 0-360
-};
+
